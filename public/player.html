@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Splonk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="CSS/shared.css">
+    <link rel="stylesheet" type="text/css" href="CSS/player.css">
+  </head>
+  <body>
+    <h1 id="name">User</h1>
+    <h1 id="points">0</h1>
+    <br><br><br>
+    <div id="options">
+      <div class="option" id="red"><img class="unselectable" src="Images/Heart.png"></div>
+      <div class="option" id="blue"><img class="unselectable" src="Images/Diamond.png"></div>
+      <div class="option" id="green"><img class="unselectable" src="Images/Club.png"></div>
+      <div class="option" id="purple"><img class="unselectable" src="Images/Spade.png"></div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="JS/jquery.3.7.1.min.js"></script>
+    <script src="JS/player.js"></script>
+  </body>
+</html>

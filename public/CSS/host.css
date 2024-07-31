@@ -1,0 +1,60 @@
+input {
+  border: none;
+  padding: 16px;
+  border-radius: 16px;
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  color: #444444;
+}
+
+input:focus {
+  outline-width: 0;
+}
+
+#gobutton {
+  border: none;
+  padding: 16px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: #444444;
+  transition: all 0.25s;
+}
+
+#gobutton:hover {
+  background-color: #ffffff;
+  transform: scale(1.25);
+}
+
+.option {
+  display: inline-block;
+  background-color: #dddddd;
+  border: 5px #ffffff solid;
+  border-radius: 35px;
+  width: 35vw;
+  text-align: left;
+  transition: border 0.25s;
+}
+
+.option img {
+  width: 64px;
+  filter: invert(100%);
+  vertical-align: middle;
+}
+
+.option img.icon {
+  width: 60px;
+  height: 75px;
+  border-right: 3px #000000 outset;
+  padding: 20px 28px 20px 28px;
+  border-radius: 25%;
+}
+
+.option span {
+  vertical-align: middle;
+  font-size: 24px;
+  color: #ffffff;
+}
