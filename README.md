@@ -1,6 +1,6 @@
 # splonk
 
-A Node.JS web application that is based on Kahoot, with more of focus on having fun than learning.
+A Node.JS web application that is based on Kahoot, with more of focus on having fun rather than learning.
 <br>
 **Designed for the host to run locally!**
 <br>

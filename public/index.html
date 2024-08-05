@@ -3,31 +3,56 @@
   <head>
     <title>Splonk</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="CSS/shared.css">
+    <link rel="stylesheet" type="text/css" href="CSS/main.css">
     <link rel="stylesheet" type="text/css" href="CSS/host.css">
   </head>
   <body>
-    <div id="content" class="wrapper" hidden>
-      <h1>Input the host code!</h1>
+    <div id="content" class="wrapper" style="display: none;">
+      <h2>Input the host code!</h2>
+      <hr style="width: 30%;">
       <input id="codeinput" type="text" placeholder="Code" spellcheck="false" maxlength="6" style="width: 200px;">
       <br><br>
-      <input id="gameinput" type="text" placeholder="Game File Name" spellcheck="false" style="width: 350px;">
+      <input id="gameinput" type="text" placeholder="Game File Name" spellcheck="false" maxLength="256" style="width: 350px;">
       <br><br>
-      <button id="gobutton">Go</button>
+      <button id="gobutton" class="button">Go</button>
       <h5 id="statusmessage">Waiting for code and game name...</h5>
       <h3>This will be device/page that will display the questions.</h3>
     </div>
-    <div id="hostcontent" class="wrapper">
-      <h1>Question</h1>
-      <div id="options">
-        <div class="option unselectable" id="red"><img class="icon unselectable" src="Images/Heart.png"><img class="unselectable" src="Images/Arrow.svg"><span>Option 1</span></div>
-        <div class="option unselectable" id="blue"><img class="icon unselectable" src="Images/Diamond.png"><img class="unselectable" src="Images/Arrow.svg"><span>Option 2</span></div>
-        <div class="option unselectable" id="green"><img class="icon unselectable" src="Images/Club.png"><img class="unselectable" src="Images/Arrow.svg"><span>Option 3</span></div>
-        <div class="option unselectable" id="purple"><img class="icon unselectable" src="Images/Spade.png"><img class="unselectable" src="Images/Arrow.svg"><span>Option 4</span></div>
+    <div id="hostcontent" class="wrapper" style="display: none;">
+      <h1 class="boxtext highlight">Question</h1>
+      <br>
+      <div id="counter">#</div>
+      <br><br>
+      <div id="options" style="display: none;">
+        <div class="option unselectable red"><img class="icon unselectable" src="Images/Heart.png"><img class="unselectable" src="Images/Arrow.svg"><span>Option 1</span></div>
+        <div class="option unselectable blue"><img class="icon unselectable" src="Images/Diamond.png"><img class="unselectable" src="Images/Arrow.svg"><span>Option 2</span></div>
+        <div class="option unselectable green"><img class="icon unselectable" src="Images/Club.png"><img class="unselectable" src="Images/Arrow.svg"><span>Option 3</span></div>
+        <div class="option unselectable purple"><img class="icon unselectable" src="Images/Spade.png"><img class="unselectable" src="Images/Arrow.svg"><span>Option 4</span></div>
       </div>
+      <h3 class="boxtext">Question Type</h3>
+      <br>
+      <button class="button">Skip</button>
+    </div>
+    <div id="leaderboard" class="wrapper" style="display: none;">
+      <h1>Leaderboard</h1>
+      <ul>
+        <li class="unselectable"><div class="left">1st</div> <div class="player">Player</div><div class="right">####</div></li>
+        <br>
+        <li class="unselectable"><div class="left">2nd</div> <div class="player">Player</div><div class="right">####</div></li>
+        <br>
+        <li class="unselectable"><div class="left">3rd</div> <div class="player">Player</div><div class="right">####</div></li>
+        <br>
+        <li class="unselectable"><div class="left">4th</div> <div class="player">Player</div><div class="right">####</div></li>
+        <br>
+        <li class="unselectable"><div class="left">5th</div> <div class="player">Player</div><div class="right">####</div></li>
+      </ul>
+      <hr style="width: 45%;">
+      <br>
+      <button class="button">Next Question</button>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="JS/jquery.3.7.1.min.js"></script>
+    <script src="JS/utilities.js"></script>
     <script src="JS/main.js"></script>
   </body>
 </html>

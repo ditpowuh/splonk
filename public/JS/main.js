@@ -2,7 +2,7 @@ var socket = io();
 
 socketID = "";
 socket.on("connect", () => {
-   socketID = socket.id;
+  socketID = socket.id;
 });
 
 errors = 0;
@@ -13,15 +13,15 @@ socket.on("check", function(result) {
     window.location.replace("player.html");
   }
   else {
-    document.getElementById("content").removeAttribute("hidden");
+    $("#content").css("display", "block");
   }
 });
 
 $("#gobutton").click(function() {
-  socket.emit("setupHost", $("#codeinput").val(), $("#gameinput").val(), socketID);
+  socket.emit("hostSetup", $("#codeinput").val(), $("#gameinput").val(), socketID);
 });
 
-socket.on("hostReady", function(valid) {
+socket.on("hostReady", function(valid, verifiedID) {
   if (!valid) {
     errors++;
     $("#statusmessage").css("color", "#ff0000");
@@ -30,6 +30,17 @@ socket.on("hostReady", function(valid) {
     }
     else {
       $("#statusmessage").html("Incorrect code or invalid game! Check console.");
+    }
+  }
+  else {
+    if (hostID == verifiedID) {
+      $(window).on("beforeunload", function(e) {
+        return e;
+      });
+      // remove host code and put area before start
+    }
+    else {
+      window.location.replace("player.html");
     }
   }
 });

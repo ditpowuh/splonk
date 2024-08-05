@@ -7,9 +7,10 @@
     "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "A multiple choice quiz game with less of a focus towards learning.",
+  "author": "A multiple choice quiz game!",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "socket.io": "^4.7.5"
   }

@@ -3,21 +3,60 @@
   <head>
     <title>Splonk</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="CSS/shared.css">
+    <link rel="stylesheet" type="text/css" href="CSS/main.css">
     <link rel="stylesheet" type="text/css" href="CSS/player.css">
   </head>
   <body>
-    <h1 id="name">User</h1>
-    <h1 id="points">0</h1>
+    <div id="topbar" style="display: none;">
+      <h1 id="name" class="unselectable">🫵</h1>
+      <h1 id="points">0</h1>
+    </div>
     <br><br><br>
-    <div id="options">
-      <div class="option" id="red"><img class="unselectable" src="Images/Heart.png"></div>
-      <div class="option" id="blue"><img class="unselectable" src="Images/Diamond.png"></div>
-      <div class="option" id="green"><img class="unselectable" src="Images/Club.png"></div>
-      <div class="option" id="purple"><img class="unselectable" src="Images/Spade.png"></div>
+    <div id="options" style="display: none;">
+      <div class="option red"><img class="unselectable" src="Images/Heart.png"></div>
+      <div class="option blue"><img class="unselectable" src="Images/Diamond.png"></div>
+      <div class="option green"><img class="unselectable" src="Images/Club.png"></div>
+      <div class="option purple"><img class="unselectable" src="Images/Spade.png"></div>
+    </div>
+    <div id="answerreveal" class="wrapper" style="display: none;">
+      <h1 id="answerstatus" class="boxtext">Answer Status</h1>
+      <br>
+      <img id="answerimage" class="unselectable" src="Images/Tick.svg">
+      <br>
+      <h4 id="answermessage" class="boxtext" style="padding: 15px;"><i>Message</i></h4>
+      <br>
+      <div class="boxtext highlight">
+        <p>You answered:</p>
+        <div id="youranswer">
+          <div class="red"><img class="unselectable" src="Images/Heart.png"></div>
+          <div class="blue"><img class="unselectable" src="Images/Diamond.png"></div>
+          <br><br>
+          <div class="green"><img class="unselectable" src="Images/Club.png"></div>
+          <div class="purple"><img class="unselectable" src="Images/Spade.png"></div>
+          <br><br>
+        </div>
+      </div>
+      <br>
+      <h4 id="placement" class="boxtext" style="padding: 15px;">You're ??? place!</h4>
+    </div>
+    <div id="waiting" class="wrapper" style="display: none;">
+      <h1 class="boxtext highlight">Waiting...</h1>
+      <br>
+      <img class="unselectable" src="Images/Time.svg">
+      <br>
+      <h5 class="boxtext">Look at the host's screen!</h5>
+    </div>
+    <div id="playerenter" class="wrapper">
+      <h2>Put your name!</h2>
+      <hr style="width: 75%;">
+      <input id="nameinput" type="text" placeholder="Name" spellcheck="false" maxlength="16" style="width: 400px;">
+      <br><br>
+      <button id="gobutton" class="button">Go</button>
+      <h5 id="statusmessage">You're almost there!</h5>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="JS/jquery.3.7.1.min.js"></script>
+    <script src="JS/utilities.js"></script>
     <script src="JS/player.js"></script>
   </body>
 </html>

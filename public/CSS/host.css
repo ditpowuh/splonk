@@ -1,42 +1,73 @@
-input {
-  border: none;
-  padding: 16px;
-  border-radius: 16px;
-  font-size: 32px;
-  font-weight: bold;
-  text-align: center;
+#counter {
+  display: inline-block;
+  background-color: #777777;
+  font-size: 75px;
+  padding: 20px 60px 20px 60px;
+  border-radius: 40px;
+  color: #ffffff;
+  animation: floating 2s ease-in-out infinite;
+}
+
+#leaderboard h1 {
+  font-size: 40px;
+}
+
+#leaderboard ul {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+#leaderboard ul li {
+  background-color: #cccccc;
   color: #444444;
+  font-size: 30px;
+  padding: 20px;
+  width: 500px;
+  margin: 0 auto;
+  text-align: left;
+  border-radius: 20px;
 }
 
-input:focus {
-  outline-width: 0;
-}
-
-#gobutton {
-  border: none;
-  padding: 16px;
-  border-radius: 16px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  background-color: #f0f0f0;
-  color: #444444;
-  transition: all 0.25s;
-}
-
-#gobutton:hover {
+#leaderboard ul li:first-child {
   background-color: #ffffff;
-  transform: scale(1.25);
+}
+
+#leaderboard ul li:nth-child(3) {
+  width: 550px;
+}
+
+#leaderboard ul li:nth-child(5) {
+  width: 600px;
+}
+
+#leaderboard ul li:nth-child(7) {
+  width: 650px;
+}
+
+#leaderboard ul li:nth-child(9) {
+  width: 700px;
+}
+
+#leaderboard ul li div {
+  display: inline;
+}
+
+#leaderboard ul li div.left {
+  color: #000000;
+}
+
+#leaderboard ul li div.right {
+  float: right;
+  color: #999999;
 }
 
 .option {
   display: inline-block;
-  background-color: #dddddd;
-  border: 5px #ffffff solid;
+  border: 5px solid #ffffff;
   border-radius: 35px;
   width: 35vw;
   text-align: left;
-  transition: border 0.25s;
+  transition: background-color 0.25s;
 }
 
 .option img {
@@ -48,7 +79,7 @@ input:focus {
 .option img.icon {
   width: 60px;
   height: 75px;
-  border-right: 3px #000000 outset;
+  border-right: 3px outset #000000;
   padding: 20px 28px 20px 28px;
   border-radius: 25%;
 }
@@ -57,4 +88,8 @@ input:focus {
   vertical-align: middle;
   font-size: 24px;
   color: #ffffff;
+}
+
+.option.unhighlight {
+  background-color: #777777;
 }
