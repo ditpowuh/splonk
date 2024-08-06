@@ -1,9 +1,4 @@
-var socket = io();
-
-playerID = "";
-socket.on("connect", () => {
-  playerID = socket.id;
-});
+const socket = io();
 
 options = [false, false, false, false];
 buttons = [
@@ -63,45 +58,56 @@ function selectOptions() {
   $("#answerreveal").css("display", "none");
 }
 
-$("#gobutton").click(function() {
-  if ($("#nameinput").val() == "") {
-    $("#statusmessage").html("Cannot be left blank!");
-    $("#statusmessage").css("color", "#ff0000");
-    return;
-  }
-  socket.emit("playerJoin", playerID, $("#nameinput").val());
-});
+socket.on("connect", () => {
+  const playerID = socket.id;
 
-socket.on("namemessage", function(data, validity) {
-  if (validity === true) {
-    $("#topbar").css("display", "block");
-    $("#name").html(data);
-    $("#playerenter").css("display", "none");
-    $("#waiting").css("display", "block");
-    $(window).on("beforeunload", function(e) {
-      return e;
-    });
-  }
-  else {
-    $("#statusmessage").html(data);
-    $("#statusmessage").css("color", "#ff0000");
-  }
-});
+  socket.on("namemessage", function(data, validity) {
+    if (validity === true) {
+      $("#topbar").css("display", "block");
+      $("#name").html(data);
+      $("#playerenter").css("display", "none");
+      $("#waiting").css("display", "block");
+      $(window).on("beforeunload", function(e) {
+        return e;
+      });
+    }
+    else {
+      $("#statusmessage").html(data);
+      $("#statusmessage").css("color", "#ff0000");
+    }
+  });
 
-socket.on("playerAnswer", function(optionsData) {
-  options = optionsData;
-  updateButtons();
-});
+  socket.on("playerAnswer", function(optionsData) {
+    options = optionsData;
+    updateButtons();
+  });
 
-buttons[0].click(function() {
-  socket.emit("playerAnswer", playerID, 1);
-});
-buttons[1].click(function() {
-  socket.emit("playerAnswer", playerID, 2);
-});
-buttons[2].click(function() {
-  socket.emit("playerAnswer", playerID, 3);
-});
-buttons[3].click(function() {
-  socket.emit("playerAnswer", playerID, 4);
+  socket.on("kicked", function(socketID) {
+    if (playerID == socketID) {
+      $(window).off("beforeunload");
+      location.reload();
+    }
+  });
+
+  $("#gobutton").click(function() {
+    if ($("#nameinput").val() == "") {
+      $("#statusmessage").html("Cannot be left blank!");
+      $("#statusmessage").css("color", "#ff0000");
+      return;
+    }
+    socket.emit("playerJoin", playerID, $("#nameinput").val());
+  });
+
+  buttons[0].click(function() {
+    socket.emit("playerAnswer", playerID, 1);
+  });
+  buttons[1].click(function() {
+    socket.emit("playerAnswer", playerID, 2);
+  });
+  buttons[2].click(function() {
+    socket.emit("playerAnswer", playerID, 3);
+  });
+  buttons[3].click(function() {
+    socket.emit("playerAnswer", playerID, 4);
+  });
 });
