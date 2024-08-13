@@ -1,22 +1,19 @@
-#name {
+#topbar h1 {
   position: fixed;
-  top: 0;
-  left: 1vw;
+  top: 0.5vh;
   background-color: #ffffff;
   color: #666666;
   padding: 1.25vh;
   font-size: 2vh;
-  border-radius: 20px;
+  border-radius: 0.75em;
+}
+
+#name {
+  left: 1em;
 }
 
 #points {
-  position: fixed;
-  top: 0;
-  background-color: #ffffff;
-  color: #666666;
-  padding: 1.25vh;
-  font-size: 2vh;
-  border-radius: 20px;
+  right: 1em;
 }
 
 #options {
@@ -79,13 +76,10 @@
 
 @media all and (max-width: 575px) {
   #name {
-    top: 1vh;
-    left: 3vw;
-    font-size: 1.5vh;
+    border-radius: 10px;
   }
 
   #points {
-    top: 1vh;
-    font-size: 1.5vh;
+    border-radius: 10px;
   }
 }

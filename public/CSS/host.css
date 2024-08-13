@@ -1,11 +1,49 @@
-#counter {
+progress, progress::-webkit-progress-bar, progress::-webkit-progress-value {
+  border: none;
+  height: 16px;
+  border-radius: 6px;
+  width: 450px;
+}
+
+progress::-moz-progress-bar {
+  border: none;
+  height: 16px;
+  border-radius: 6px;
+  width: 450px;
+}
+
+progress::-webkit-progress-bar {
+  background-color: #ffffff;
+}
+
+progress::-webkit-progress-value {
+  background-color: #cccccc;
+}
+
+#beforecounter {
   display: inline-block;
   background-color: #777777;
   font-size: 75px;
   padding: 20px 60px 20px 60px;
-  border-radius: 40px;
+  border-right: 5px solid #bbbbbb;
+  border-left: 5px solid #bbbbbb;
+  border-radius: 30px;
   color: #ffffff;
   animation: floating 2s ease-in-out infinite;
+}
+
+#counter {
+  background-color: #eeeeee;
+  color: #3f3f3f;
+  font-size: 60px;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 100px;
+  border-radius: 50%;
+  animation: swing 2s ease-in-out infinite;
 }
 
 #leaderboard h1 {
@@ -59,6 +97,26 @@
 #leaderboard ul li div.right {
   float: right;
   color: #999999;
+}
+
+#playerlist {
+  max-width: 550px;
+}
+
+#playerlist div {
+  display: inline-block;
+  background-color: #cccccc;
+  font-size: 20px;
+  padding: 20px;
+  border-bottom: 5px solid #bbbbbb;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+#playerlist div:hover {
+  border-bottom: 5px solid #b2b2b2;
+  text-decoration: line-through;
 }
 
 .option {

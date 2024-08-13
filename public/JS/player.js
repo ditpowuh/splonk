@@ -1,19 +1,19 @@
 const socket = io();
 
-options = [false, false, false, false];
-buttons = [
+var options = [false, false, false, false];
+const buttons = [
   $("#options").find(".red"),
   $("#options").find(".blue"),
   $("#options").find(".green"),
   $("#options").find(".purple")
 ];
 
-rightMessages = [
+const rightMessages = [
   "good work!!",
   "yippee",
   "yayyy"
 ];
-wrongMessages = [
+const wrongMessages = [
   "womp womp..",
   "oh nooo",
   "hell naw"
@@ -32,7 +32,7 @@ function updateButtons() {
   }
 }
 
-function answerReveal() {
+function answerReveal(playerAnswer) {
   $("#options").css("display", "none");
   $("#answerreveal").css("display", "inline");
   if (true) {
@@ -46,7 +46,7 @@ function answerReveal() {
     $("#answermessage").html(getRandomItem(wrongMessages));
   }
   $("#youranswer").find("div").each(function(index, element) {
-    if (obj[i] === true) {
+    if (playerAnswer[index] === true) {
       $(element).css("border", "5px #000000 solid");
     }
   });
@@ -82,7 +82,7 @@ socket.on("connect", () => {
     updateButtons();
   });
 
-  socket.on("kicked", function(socketID) {
+  socket.on("playerKicked", function(socketID) {
     if (playerID == socketID) {
       $(window).off("beforeunload");
       location.reload();

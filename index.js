@@ -7,24 +7,23 @@ const io = require("socket.io")(http);
 const crypto = require("crypto");
 
 const PORT = process.env.PORT || 3000;
-const PLAYERLIMIT = 100;
 
-hostEntered = false;
-hostCode = "";
-hostID = "";
-loadedGame = null;
-for (let i = 0; i < 6; i++) {
-  hostCode = hostCode + crypto.randomInt(0, 9).toString();
-}
+const PLAYER_LIMIT = 100; // Modify this to adjust the player limit
+const CONNECTION_LOGGING = true; // Modify this if knowing when players join and leave is desired
+
+const hostCode = Array.from({length: 6}, () => crypto.randomInt(0, 9)).join("");
+var hostEntered = false;
+var hostID = "";
+
+var playerData = {};
+
+var loadedGame = null;
+var gameStart = false;
+var currentQuestion = 1;
+var timer = 0;
+var timerInterval = null;
+
 console.log(`Host Code: ${hostCode}\n`);
-
-playerAnswers = {};
-playerNames = {};
-playerPoints = {};
-playerTimes = {};
-currentQuestion = 1;
-timer = 0;
-timerInterval = null;
 
 process.on("uncaughtException", function(exception) {
   console.log(exception);
@@ -35,8 +34,14 @@ function verifyHost(socketID) {
 }
 
 function validifyName(name) {
+  if (Object.keys(playerData).length >= PLAYER_LIMIT) {
+    return {"validity": false, "message": "Too much players!"};
+  }
   if (name == "") {
-    return {"validity": false, "message": "Please input a name!"};
+    return {"validity": false, "message": "Cannot be left blank!"};
+  }
+  if (hostID == "") {
+    return {"validity": false, "message": "Host has not entered yet!"};
   }
   if (/\p{Extended_Pictographic}/u.test(name)) {
     return {"validity": false, "message": "Cannot include emojis!"};
@@ -65,7 +70,7 @@ function clearTimer() {
 }
 
 function completeQuestion() {
-  Object.keys(playerAnswers).forEach(function(key) {
+  Object.keys(playerData).forEach(function(key) {
     let playerResponse = [];
     let allNull = true;
 
@@ -76,34 +81,34 @@ function completeQuestion() {
     }
     if (allNull) {
       let correctResponse = true;
-      for (let i = 0; i < playerAnswers[key].length; i++) {
-        if (playerAnswers[key][i] === true) {
+      for (let i = 0; i < playerData[key]["answer"].length; i++) {
+        if (playerData[key]["answer"][i] === true) {
           correctResponse = false;
         }
       }
-      if (key in playerTimes && correctResponse) {
-        playerPoints[key] = playerPoints + Math.round(1000 * (playerTimes[key] / loadedGame.questions[currentQuestion - 1].time));
+      if (playerData[key]["time"] !== undefined && correctResponse) {
+        playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * (playerData[key]["time"] / loadedGame.questions[currentQuestion - 1].time));
       }
       return;
     }
 
-    for (let i = 0; i < playerAnswers[key].length; i++) {
-      if (playerAnswers[key][i] === true) {
+    for (let i = 0; i < playerData[key]["answer"].length; i++) {
+      if (playerData[key]["answer"][i] === true) {
         playerResponse.push(loadedGame.questions[currentQuestion - 1].options[i]);
       }
     }
     let correctResponse = (playerResponse.toString() == loadedGame.questions[currentQuestion - 1].answers.toString());
-    if (key in playerTimes && correctResponse) {
-      playerPoints[key] = playerPoints + Math.round(1000 * (playerTimes[key] / loadedGame.questions[currentQuestion - 1].time));
+    if (playerData[key]["time"] !== undefined && correctResponse) {
+      playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * (playerData[key]["time"] / loadedGame.questions[currentQuestion - 1].time));
     }
   });
 }
 
 function newQuestion() {
-  Object.keys(playerAnswers).forEach(function(key) {
-    playerAnswers[key] = [false, false, false, false];
+  Object.keys(playerData).forEach(function(key) {
+    playerData[key]["answer"] = [false, false, false, false];
+    delete playerData[key]["time"];
   });
-  playerTimes = {};
   currentQuestion = currentQuestion + 1;
 }
 
@@ -114,15 +119,29 @@ app.get("*", function(request, response) {
 });
 
 io.on("connection", function(socket) {
-  console.log(`User connected! (Socket ID: ${socket.id})`);
+  if (CONNECTION_LOGGING) {
+    console.log(`User connected! (Socket ID: ${socket.id})`);
+  }
   socket.on("disconnect", function() {
-    console.log(`User disconnected! (Socket ID: ${socket.id})`);
+    if (CONNECTION_LOGGING) {
+      console.log(`User disconnected! (Socket ID: ${socket.id})`);
+    }
     if (socket.id == hostID) {
       console.log("\nALERT: Host has left!\n");
+    }
+    if (socket.id in playerData && !gameStart) {
+      delete playerData[socket.id];
+      io.sockets.emit("playerUpdate", Object.values(playerData).map(player => player.name), hostID);
     }
   });
   socket.on("check", function() {
     socket.emit("check", hostEntered);
+  });
+  socket.on("startGame", function(socketID) {
+    if (!verifyHost(socketID)) {
+      return;
+    }
+    gameStart = true;
   });
   socket.on("hostSetup", function(code, fileName, socketID) {
     if (hostEntered) {
@@ -140,7 +159,7 @@ io.on("connection", function(socket) {
           console.log(`[${socketID}] There was a problem with loading the selected game.`);
           console.log(err);
         }
-        io.sockets.emit("hostReady", false, null);
+        io.sockets.emit("hostReady", false, socketID);
         return;
       }
     }
@@ -156,7 +175,7 @@ io.on("connection", function(socket) {
           console.log(`[${socketID}] There was a problem with loading the selected game.`);
           console.log(err);
         }
-        io.sockets.emit("hostReady", false, null);
+        io.sockets.emit("hostReady", false, socketID);
         return;
       }
     }
@@ -168,20 +187,21 @@ io.on("connection", function(socket) {
     }
     else {
       console.log(`[${socketID}] Incorrect code was entered.`);
-      io.sockets.emit("hostReady", false, null);
+      io.sockets.emit("hostReady", false, socketID);
     }
   });
-  socket.on("hostSkip", function(socketID) {
+  socket.on("hostEnd", function(socketID) {
 
   });
   socket.on("playerJoin", function(playerID, playerName) {
-    if (validifyName(playerName).validity === false) {
-      socket.emit("namemessage", validifyName(playerName).message, false);
+    let validityCheck = validifyName(playerName);
+    if (validityCheck.validity === false) {
+      socket.emit("namemessage", validityCheck.message, false);
       return;
     }
     let alreadyExists = false;
-    Object.values(playerNames).forEach(function(value) {
-      if (value == playerName) {
+    Object.keys(playerData).forEach(function(key) {
+      if (playerData[key]["name"] == playerName) {
         alreadyExists = true;
       }
     });
@@ -189,9 +209,13 @@ io.on("connection", function(socket) {
       socket.emit("namemessage", "Player name already eixsts!", false);
       return;
     }
-    playerNames[playerID] = playerName;
-    playerAnswers[playerID] = [false, false, false, false];
+    playerData[playerID] = {
+      "name": playerName,
+      "answer": [false, false, false, false],
+      "points": 0
+    };
     socket.emit("namemessage", playerName, true);
+    io.sockets.emit("playerUpdate", Object.values(playerData).map(player => player.name), hostID);
   });
   socket.on("playerAnswer", function(playerID, optionChange) {
     if (optionChange < 1 || optionChange > 4) {
@@ -202,12 +226,21 @@ io.on("connection", function(socket) {
         if (optionChange === i + 1) {
           continue;
         }
-        playerAnswers[playerID][i] = false;
+        playerData[playerID]["answer"][i] = false;
       }
     }
-    playerAnswers[playerID][optionChange - 1] = !playerAnswers[playerID][optionChange - 1];
-    playerTimes[playerID] = timer;
-    socket.emit("playerAnswer", playerAnswers[playerID]);
+    playerData[playerID]["answer"][optionChange - 1] = !playerData[playerID]["answer"][optionChange - 1];
+    playerData[playerID]["time"] = timer;
+    socket.emit("playerAnswer", playerData[playerID]["answer"]);
+  });
+  socket.on("playerKick", function(playerName, socketID) {
+    if (!verifyHost(socketID)) {
+      return;
+    }
+    let playerID = Object.keys(playerData).find(key => playerData[key]["name"] == playerName);
+    delete playerData[playerID];
+    io.sockets.emit("playerKicked", playerID);
+    io.sockets.emit("playerUpdate", Object.values(playerData).map(player => player.name), hostID);
   });
 });
 
