@@ -1,6 +1,6 @@
 const socket = io();
 
-const popAudio = new Audio("Audio/Pop.mp3");
+const popAudio = new Audio("/Audio/Pop.mp3");
 
 var timerInterval = null;
 var timerNumber = 0;
@@ -37,7 +37,7 @@ socket.on("connect", () => {
   socket.emit("check");
   socket.on("check", function(result) {
     if (result === true) {
-      window.location.replace("player.html");
+      window.location.replace("/player");
     }
     else {
       $("#startcontent").css("display", "block");
@@ -66,7 +66,7 @@ socket.on("connect", () => {
         $("#startcontent").css("display", "none");
       }
       else {
-        window.location.replace("player.html");
+        window.location.replace("/player");
       }
     }
   });

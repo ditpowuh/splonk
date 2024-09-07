@@ -112,10 +112,12 @@ function newQuestion() {
   currentQuestion = currentQuestion + 1;
 }
 
-app.use(express.static("public"));
+app.use(express.static("public", {
+  extensions: ["html"]
+}));
 
 app.get("*", function(request, response) {
-  response.sendFile(__dirname + "/public/404.html");
+  response.sendFile(__dirname + "/public/404");
 });
 
 io.on("connection", function(socket) {

@@ -37,12 +37,12 @@ function answerReveal(playerAnswer) {
   $("#answerreveal").css("display", "inline");
   if (true) {
     $("#answerstatus").html("Correct!");
-    $("#answerimage").attr("src", "Images/Tick.svg");
+    $("#answerimage").attr("src", "/Images/Tick.svg");
     $("#answermessage").html(getRandomItem(rightMessages));
   }
   else {
     $("#answerstatus").html("Incorrect!");
-    $("#answerimage").attr("src", "Images/Cross.svg");
+    $("#answerimage").attr("src", "/Images/Cross.svg");
     $("#answermessage").html(getRandomItem(wrongMessages));
   }
   $("#youranswer").find("div").each(function(index, element) {
