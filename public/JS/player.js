@@ -24,7 +24,7 @@ function updateButtons() {
     buttons[i].find("img").removeClass("bounce");
     if (options[i] === true) {
       buttons[i].find("img").addClass("bounce");
-      buttons[i].css("border", "5px #000000 solid");
+      buttons[i].css("border", "5px #999999 solid");
     }
     else {
       buttons[i].css("border", "5px #ffffff solid");
@@ -32,34 +32,33 @@ function updateButtons() {
   }
 }
 
-function answerReveal(playerAnswer) {
+function answerReveal(playerAnswer, isCorrect, placing) {
   $("#options").css("display", "none");
   $("#answerreveal").css("display", "inline");
-  if (true) {
+  if (isCorrect) {
     $("#answerstatus").html("Correct!");
     $("#answerimage").attr("src", "/Images/Tick.svg");
-    $("#answermessage").html(getRandomItem(rightMessages));
+    $("#answermessage").html("<i>" + getRandomItem(rightMessages) + "</i>");
   }
   else {
     $("#answerstatus").html("Incorrect!");
     $("#answerimage").attr("src", "/Images/Cross.svg");
-    $("#answermessage").html(getRandomItem(wrongMessages));
+    $("#answermessage").html("<i>" + getRandomItem(wrongMessages) + "</i>");
   }
   $("#youranswer").find("div").each(function(index, element) {
     if (playerAnswer[index] === true) {
-      $(element).css("border", "5px #000000 solid");
+      $(element).css("border", "5px #999999 solid");
+    }
+    else {
+      $(element).css("border", "5px #ffffff solid");
     }
   });
-  $("#placement").html(`You're ${givePlacing(number)} place!`);
-}
-
-function selectOptions() {
-  $("#options").css("display", "grid");
-  $("#answerreveal").css("display", "none");
+  $("#placement").html(`You're ${givePlacing(placing)} place!`);
 }
 
 socket.on("connect", () => {
   const playerID = socket.id;
+  var playerJoined = false;
 
   socket.on("namemessage", function(data, validity) {
     if (validity === true) {
@@ -70,6 +69,7 @@ socket.on("connect", () => {
       $(window).on("beforeunload", function(e) {
         return e;
       });
+      playerJoined = true;
     }
     else {
       $("#statusmessage").html(data);
@@ -77,7 +77,55 @@ socket.on("connect", () => {
     }
   });
 
+  socket.on("startQuestion", function(numberOfOptions) {
+    if (!playerJoined) {
+      return;
+    }
+    options = [false, false, false, false];
+    updateButtons();
+
+    $("#youranswer").find("div").each(function(index, element) {
+      if (index < numberOfOptions) {
+        $(element).css("display", "inline-block");
+      }
+      else {
+        $(element).css("display", "none");
+      }
+    });
+    if (numberOfOptions > 2) {
+      $("#youranswer").css("padding-top", "20px");
+    }
+    else {
+      $("#youranswer").css("padding-top", "30px");
+    }
+    $("#options").find("div").each(function(index, element) {
+      if (index < numberOfOptions) {
+        $(element).css("display", "flex");
+      }
+      else {
+        $(element).css("display", "none");
+      }
+    });
+
+    $("#options").css("display", "grid");
+    $("#answerreveal").css("display", "none");
+    $("#waiting").css("display", "none");
+  });
+
+  socket.on("finishedQuestion", function(playerData, leaderboard) {
+    if (!playerJoined) {
+      return;
+    }
+    let placing = leaderboard.findIndex(([key, value]) => key == playerID) + 1;
+    answerReveal(options, playerData[playerID]["correct"], placing);
+    $("#points").html(playerData[playerID]["points"]);
+    $("#waiting").css("display", "none");
+  });
+
   socket.on("playerAnswer", function(optionsData) {
+    if (!playerJoined) {
+      return;
+    }
     options = optionsData;
     updateButtons();
   });
@@ -87,6 +135,15 @@ socket.on("connect", () => {
       $(window).off("beforeunload");
       location.reload();
     }
+  });
+
+  socket.on("waiting", function() {
+    if (!playerJoined) {
+      return;
+    }
+    $("#waiting").css("display", "block");
+    $("#options").css("display", "none");
+    $("#answerreveal").css("display", "none");
   });
 
   $("#gobutton").click(function() {
@@ -99,15 +156,23 @@ socket.on("connect", () => {
   });
 
   buttons[0].click(function() {
-    socket.emit("playerAnswer", playerID, 1);
+    if (playerJoined) {
+      socket.emit("playerAnswer", playerID, 1);
+    }
   });
   buttons[1].click(function() {
-    socket.emit("playerAnswer", playerID, 2);
+    if (playerJoined) {
+      socket.emit("playerAnswer", playerID, 2);
+    }
   });
   buttons[2].click(function() {
-    socket.emit("playerAnswer", playerID, 3);
+    if (playerJoined) {
+      socket.emit("playerAnswer", playerID, 3);
+    }
   });
   buttons[3].click(function() {
-    socket.emit("playerAnswer", playerID, 4);
+    if (playerJoined) {
+      socket.emit("playerAnswer", playerID, 4);
+    }
   });
 });

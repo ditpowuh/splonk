@@ -16,10 +16,12 @@ var hostEntered = false;
 var hostID = "";
 
 var playerData = {};
+var leaderboard = {};
 
 var loadedGame = null;
 var gameStart = false;
-var currentQuestion = 1;
+var questionInProgress = false;
+var currentQuestion = 0;
 var timer = 0;
 var timerInterval = null;
 
@@ -44,7 +46,7 @@ function validifyName(name) {
     return {"validity": false, "message": "Host has not entered yet!"};
   }
   if (/\p{Extended_Pictographic}/u.test(name)) {
-    return {"validity": false, "message": "Cannot include emojis!"};
+    return {"validity": false, "message": "Invalid characters has been entered!"};
   }
   if (name.length > 16) {
     return {"validity": false, "message": "Too long!"};
@@ -52,11 +54,14 @@ function validifyName(name) {
   return {"validity": true, "message": "Sucess!"};
 }
 
-function setTimer(amount) {
+function setTimer(amount, taskAfter) {
   timer = amount;
   timerInterval = setInterval(() => {
     timer = timer - 0.05;
-    if (Math.round(timer) === 0 || timer < 0) {
+    if (timer <= 0) {
+      if (taskAfter !== undefined && typeof taskAfter == "function") {
+        taskAfter();
+      }
       clearTimer();
     }
   }, 50);
@@ -69,16 +74,19 @@ function clearTimer() {
   }
 }
 
-function completeQuestion() {
+function completeQuestion(socket) {
+  var multiplier = loadedGame.questions[currentQuestion - 1].pointMultiplier || 1;
+  var time = loadedGame.questions[currentQuestion - 1].time || 15;
+
+  var allNull = true;
+  for (let i = 0; i < loadedGame.questions[currentQuestion - 1].answers.length; i++) {
+    if (loadedGame.questions[currentQuestion - 1].answers[i] !== null) {
+      allNull = false;
+    }
+  }
   Object.keys(playerData).forEach(function(key) {
     let playerResponse = [];
-    let allNull = true;
 
-    for (let i = 0; i < loadedGame.questions[currentQuestion - 1].answers[i].length; i++) {
-      if (loadedGame.questions[currentQuestion - 1].answers[i] !== null) {
-        allNull = false;
-      }
-    }
     if (allNull) {
       let correctResponse = true;
       for (let i = 0; i < playerData[key]["answer"].length; i++) {
@@ -86,30 +94,51 @@ function completeQuestion() {
           correctResponse = false;
         }
       }
+      if (correctResponse) {
+        playerData[key]["correct"] = true;
+        if (playerData[key]["time"] === undefined) {
+          playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * multiplier);
+        }
+        else {
+          playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * (playerData[key]["time"] / time) * multiplier);
+        }
+      }
+      else {
+        playerData[key]["correct"] = false;
+      }
+    }
+    else {
+      for (let i = 0; i < playerData[key]["answer"].length; i++) {
+        if (playerData[key]["answer"][i] === true) {
+          playerResponse.push(loadedGame.questions[currentQuestion - 1].options[i]);
+        }
+      }
+      let correctResponse = (playerResponse.toString() == loadedGame.questions[currentQuestion - 1].answers.toString());
       if (playerData[key]["time"] !== undefined && correctResponse) {
-        playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * (playerData[key]["time"] / loadedGame.questions[currentQuestion - 1].time));
+        playerData[key]["correct"] = true;
+        playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * (playerData[key]["time"] / time) * multiplier);
       }
-      return;
-    }
-
-    for (let i = 0; i < playerData[key]["answer"].length; i++) {
-      if (playerData[key]["answer"][i] === true) {
-        playerResponse.push(loadedGame.questions[currentQuestion - 1].options[i]);
+      else {
+        playerData[key]["correct"] = false;
       }
-    }
-    let correctResponse = (playerResponse.toString() == loadedGame.questions[currentQuestion - 1].answers.toString());
-    if (playerData[key]["time"] !== undefined && correctResponse) {
-      playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * (playerData[key]["time"] / loadedGame.questions[currentQuestion - 1].time));
     }
   });
+
+  leaderboard = Object.entries(playerData).sort((a, b) => {
+    return b[1].points - a[1].points;
+  });
+
+  socket.emit("answerReveal", loadedGame.questions[currentQuestion - 1].answers);
 }
 
-function newQuestion() {
-  Object.keys(playerData).forEach(function(key) {
-    playerData[key]["answer"] = [false, false, false, false];
-    delete playerData[key]["time"];
+function newQuestion(socket) {
+  Object.keys(playerData).forEach(function(playerID) {
+    playerData[playerID]["answer"] = [false, false, false, false];
+    delete playerData[playerID]["time"];
+    delete playerData[playerID]["correct"];
   });
   currentQuestion = currentQuestion + 1;
+  socket.emit("newQuestion", loadedGame.questions[currentQuestion - 1])
 }
 
 app.use(express.static("public", {
@@ -117,7 +146,7 @@ app.use(express.static("public", {
 }));
 
 app.get("*", function(request, response) {
-  response.sendFile(__dirname + "/public/404");
+  response.sendFile(__dirname + "/public/404.html");
 });
 
 io.on("connection", function(socket) {
@@ -144,6 +173,7 @@ io.on("connection", function(socket) {
       return;
     }
     gameStart = true;
+    newQuestion(socket);
   });
   socket.on("hostSetup", function(code, fileName, socketID) {
     if (hostEntered) {
@@ -208,7 +238,7 @@ io.on("connection", function(socket) {
       }
     });
     if (alreadyExists) {
-      socket.emit("namemessage", "Player name already eixsts!", false);
+      socket.emit("namemessage", "A player with that name already exists!", false);
       return;
     }
     playerData[playerID] = {
@@ -220,7 +250,7 @@ io.on("connection", function(socket) {
     io.sockets.emit("playerUpdate", Object.values(playerData).map(player => player.name), hostID);
   });
   socket.on("playerAnswer", function(playerID, optionChange) {
-    if (optionChange < 1 || optionChange > 4) {
+    if (optionChange < 1 || optionChange > 4 || !questionInProgress) {
       return;
     }
     if (loadedGame.questions[currentQuestion - 1].answers.length === 1) {
@@ -244,8 +274,58 @@ io.on("connection", function(socket) {
     io.sockets.emit("playerKicked", playerID);
     io.sockets.emit("playerUpdate", Object.values(playerData).map(player => player.name), hostID);
   });
+  socket.on("startQuestion", function(socketID) {
+    if (!verifyHost(socketID)) {
+      return;
+    }
+    questionInProgress = true;
+    let time = loadedGame.questions[currentQuestion - 1].time || 15;
+    setTimer(time, function() {
+      questionInProgress = false;
+      completeQuestion(socket);
+      io.sockets.emit("finishedQuestion", playerData, leaderboard);
+    });
+    io.sockets.emit("startQuestion", loadedGame.questions[currentQuestion - 1].options.length);
+  });
+  socket.on("endQuestion", function(socketID) {
+    if (!verifyHost(socketID)) {
+      return;
+    }
+    clearTimer();
+    questionInProgress = false;
+    completeQuestion(socket);
+    io.sockets.emit("finishedQuestion", playerData, leaderboard);
+  });
+  socket.on("leaderboard", function(socketID) {
+    if (!verifyHost(socketID)) {
+      return;
+    }
+    socket.emit("leaderboard", currentQuestion / loadedGame.questions.length, leaderboard.slice(0, 5));
+  });
+  socket.on("newQuestion", function(socketID) {
+    if (!verifyHost(socketID)) {
+      return;
+    }
+    if (currentQuestion === loadedGame.questions.length) {
+      console.log("Done!");
+      return;
+    }
+    newQuestion(socket);
+  });
+  socket.on("showingQuestion", function(socketID) {
+    if (!verifyHost(socketID)) {
+      return;
+    }
+    io.sockets.emit("waiting");
+  });
+  socket.on("questionTimer", function(socketID) {
+    if (!verifyHost(socketID)) {
+      return;
+    }
+    socket.emit("questionTimer", Math.ceil(timer));
+  });
 });
 
 http.listen(PORT, function() {
-  console.log(`Listening at specified port...\nGo to http://localhost:${PORT}`);
+  console.log(`Listening at specified port...\nGo to http://localhost:${PORT} to start.`);
 });

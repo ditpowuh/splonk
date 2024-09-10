@@ -31,6 +31,12 @@
   border-radius: 50%;
 }
 
+#youranswer {
+  background-color: #dddddd;
+  padding: 0 20px 0 20px;
+  border-radius: 20px;
+}
+
 #youranswer div {
   display: inline-block;
   border: 5px solid #ffffff;
@@ -52,6 +58,10 @@
   border-right: 5px solid #eeeeee;
   border-left: 5px solid #eeeeee;
   animation: floating 2s ease-in-out infinite;
+}
+
+#answerstatus {
+  font-size: 48px;
 }
 
 .option {
@@ -81,5 +91,37 @@
 
   #points {
     border-radius: 10px;
+  }
+
+  #answerstatus {
+    font-size: 40px;
+  }
+
+  #answerimage {
+    height: 80px;
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  #answermessage {
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  #checkarea {
+    transform: scale(0.75);
+    margin-top: -50px;
+  }
+
+  #placement {
+    margin-top: -50px;
+  }
+}
+
+@media all and (max-height: 850px) {
+  #answermessage {
+    display: none;
   }
 }

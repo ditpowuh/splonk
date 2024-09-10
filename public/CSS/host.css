@@ -20,6 +20,10 @@ progress::-webkit-progress-value {
   background-color: #cccccc;
 }
 
+#question {
+  font-size: 48px;
+}
+
 #beforecounter {
   display: inline-block;
   background-color: #777777;
@@ -43,7 +47,7 @@ progress::-webkit-progress-value {
   vertical-align: middle;
   line-height: 100px;
   border-radius: 50%;
-  animation: swing 2s ease-in-out infinite;
+  animation: swing 1s ease-in-out infinite;
 }
 
 #leaderboard h1 {
@@ -90,6 +94,10 @@ progress::-webkit-progress-value {
   display: inline;
 }
 
+#leaderboard ul li img {
+  padding: 0 15px 0 15px;
+}
+
 #leaderboard ul li div.left {
   color: #000000;
 }
@@ -117,6 +125,53 @@ progress::-webkit-progress-value {
 #playerlist div:hover {
   border-bottom: 5px solid #b2b2b2;
   text-decoration: line-through;
+}
+
+#questiontype h2 {
+  display: inline;
+  vertical-align: middle;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+#questiontype img {
+  display: inline;
+  padding: 0 5px 0 5px;
+  filter: invert(1);
+}
+
+@keyframes swing {
+  0% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(-5deg);
+  }
+}
+
+
+@keyframes star {
+  0% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(180deg) translateY(-10%) scale(0.9);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes arrow {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
 }
 
 .option {
@@ -150,4 +205,15 @@ progress::-webkit-progress-value {
 
 .option.unhighlight {
   background-color: #777777;
+}
+
+.arrow {
+  animation: arrow 3s ease-in-out infinite;
+}
+
+.star {
+  height: 25px;
+  vertical-align: middle;
+  margin-bottom: 0.25em;
+  animation: star 2s linear infinite;
 }

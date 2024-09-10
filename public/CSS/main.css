@@ -33,6 +33,7 @@ hr {
   border-radius: 5px;
   border-left: none;
   border-right: none;
+  border-bottom: none;
 }
 
 input {
@@ -47,6 +48,10 @@ input {
 
 input:focus {
   outline-width: 0;
+}
+
+input:-moz-focusring {
+  outline: none;
 }
 
 @keyframes bounce {
@@ -72,19 +77,6 @@ input:focus {
     transform: translateY(5%);
   }
 }
-
-@keyframes swing {
-  0% {
-    transform: rotate(-5deg);
-  }
-  50% {
-    transform: rotate(5deg);
-  }
-  100% {
-    transform: rotate(-5deg);
-  }
-}
-
 
 .red {
   background-color: #db5e5e;

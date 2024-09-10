@@ -20,39 +20,40 @@
       <h3>This will be device/page that will display the questions.</h3>
     </div>
     <div id="gamecontent" class="wrapper" style="display: none;">
-      <h1 class="boxtext highlight">Question</h1>
+      <h1 id="question" class="boxtext highlight">Question</h1>
       <br>
       <div id="beforecounter" class="unselectable" style="display: inline-block;">#</div>
       <br><br>
       <div id="options" style="display: none;">
-        <div class="option unselectable red"><img class="icon unselectable" src="/Images/Heart.png"><img class="unselectable" src="/Images/Arrow.svg"><span>Option 1</span></div>
-        <div class="option unselectable blue"><img class="icon unselectable" src="/Images/Diamond.png"><img class="unselectable" src="/Images/Arrow.svg"><span>Option 2</span></div>
-        <div class="option unselectable green"><img class="icon unselectable" src="/Images/Club.png"><img class="unselectable" src="/Images/Arrow.svg"><span>Option 3</span></div>
-        <div class="option unselectable purple"><img class="icon unselectable" src="/Images/Spade.png"><img class="unselectable" src="/Images/Arrow.svg"><span>Option 4</span></div>
+        <div class="option unselectable red"><img class="icon unselectable" src="/Images/Heart.png"><img class="arrow unselectable" src="/Images/Arrow.svg"><span>Option 1</span></div>
+        <div class="option unselectable blue"><img class="icon unselectable" src="/Images/Diamond.png"><img class="arrow unselectable" src="/Images/Arrow.svg"><span>Option 2</span></div>
+        <div class="option unselectable green"><img class="icon unselectable" src="/Images/Club.png"><img class="arrow unselectable" src="/Images/Arrow.svg"><span>Option 3</span></div>
+        <div class="option unselectable purple"><img class="icon unselectable" src="/Images/Spade.png"><img class="arrow unselectable" src="/Images/Arrow.svg"><span>Option 4</span></div>
       </div>
-      <h3 class="boxtext">Question Type</h3>
-      <div id="counter" class="unselectable" style="display: none;">#</div>
       <br>
-      <button id="nextbutton" class="button" style="display: none;">Next</button>
+      <div id="questiontype" class="boxtext"><img class="unselectable star" src="/Images/Star.svg"><h2>QUESTION TYPE</h2><img class="unselectable star" src="/Images/Star.svg"></div>
+      <br><br>
+      <div id="counter" class="unselectable" style="display: none;">#</div>
+      <br><br>
+      <button id="nextbutton" class="button" style="display: none;">End Question Early</button>
     </div>
     <div id="leaderboard" class="wrapper" style="display: none;">
       <h1>Leaderboard</h1>
       <ul>
-        <li class="unselectable"><div class="left">1st</div> <div class="player">Player</div><div class="right">####</div></li>
+        <li><div class="left">1st</div><img class="unselectable star" src="/Images/Star.svg"><div class="player">Player</div><div class="right">####</div></li>
         <br>
-        <li class="unselectable"><div class="left">2nd</div> <div class="player">Player</div><div class="right">####</div></li>
+        <li><div class="left">2nd</div><img class="unselectable star" src="/Images/Star.svg"><div class="player">Player</div><div class="right">####</div></li>
         <br>
-        <li class="unselectable"><div class="left">3rd</div> <div class="player">Player</div><div class="right">####</div></li>
+        <li><div class="left">3rd</div><img class="unselectable star" src="/Images/Star.svg"><div class="player">Player</div><div class="right">####</div></li>
         <br>
-        <li class="unselectable"><div class="left">4th</div> <div class="player">Player</div><div class="right">####</div></li>
+        <li><div class="left">4th</div><img class="unselectable star" src="/Images/Star.svg"><div class="player">Player</div><div class="right">####</div></li>
         <br>
-        <li class="unselectable"><div class="left">5th</div> <div class="player">Player</div><div class="right">####</div></li>
+        <li><div class="left">5th</div><img class="unselectable star" src="/Images/Star.svg"><div class="player">Player</div><div class="right">####</div></li>
       </ul>
-      <hr style="width: 45%;">
       <br>
       <progress id="progress" value="0" max="1"></progress>
-      <br><br>
-      <button class="button">Next Question</button>
+      <br><br><br>
+      <button id="nextquestionbutton" class="button">Next Question</button>
     </div>
     <div id="pregame" class="wrapper" style="display: none;">
       <h1 class="boxtext highlight">Who has joined?</h1>
