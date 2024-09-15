@@ -7,6 +7,10 @@
     <link rel="stylesheet" type="text/css" href="/CSS/host.css">
   </head>
   <body>
+    <div id="topbar" style="display: none;">
+      <img id="musictoggle" class="unselectable" src="/Images/Music.svg" title="Toggle Music">
+      <img id="soundtoggle" class="unselectable" src="/Images/Sound.svg" title="Toggle Sounds">
+    </div>
     <br><br><br>
     <div id="startcontent" class="wrapper" style="display: none;">
       <h2>Input the host code!</h2>
@@ -56,6 +60,9 @@
       <button id="nextquestionbutton" class="button">Next Question</button>
     </div>
     <div id="pregame" class="wrapper" style="display: none;">
+      <h1 id="gamename"></h1>
+      <hr style="width: 30%;">
+      <br>
       <h1 class="boxtext highlight">Who has joined?</h1>
       <br><br>
       <div id="playerlist" class="unselectable"></div>

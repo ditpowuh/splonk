@@ -96,7 +96,7 @@ socket.on("connect", () => {
       $("#youranswer").css("padding-top", "20px");
     }
     else {
-      $("#youranswer").css("padding-top", "30px");
+      $("#youranswer").css("padding-top", "55px");
     }
     $("#options").find("div").each(function(index, element) {
       if (index < numberOfOptions) {
@@ -120,6 +120,7 @@ socket.on("connect", () => {
     answerReveal(options, playerData[playerID]["correct"], placing);
     $("#points").html(playerData[playerID]["points"]);
     $("#waiting").css("display", "none");
+    $("#streak").find("h2").html(playerData[playerID]["streak"]);
   });
 
   socket.on("playerAnswer", function(optionsData) {

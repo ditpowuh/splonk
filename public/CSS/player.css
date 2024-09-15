@@ -16,6 +16,29 @@
   right: 1em;
 }
 
+#streak {
+  position: fixed;
+  top: 7.5vh;
+  right: 0.75vw;
+}
+
+#streak img {
+  height: 5vh;
+}
+
+#streak h2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -80%);
+  font-size: 1.5vh;
+  padding: 0.5vh;
+  border-radius: 1em;
+  background-color: #888888;
+  border: 0.2em solid #999999;
+  color: #ffffff;
+}
+
 #options {
   display: grid;
   gap: 20px;
@@ -64,6 +87,11 @@
   font-size: 48px;
 }
 
+#correct {
+  padding: 15px;
+  border-radius: 25px;
+}
+
 .option {
   display: flex;
   justify-content: center;
@@ -91,6 +119,10 @@
 
   #points {
     border-radius: 10px;
+  }
+
+  #streak {
+    right: 2vw;
   }
 
   #answerstatus {

@@ -16,7 +16,7 @@ var hostEntered = false;
 var hostID = "";
 
 var playerData = {};
-var leaderboard = {};
+var leaderboard = null;
 
 var loadedGame = null;
 var gameStart = false;
@@ -96,15 +96,19 @@ function completeQuestion(socket) {
       }
       if (correctResponse) {
         playerData[key]["correct"] = true;
+        playerData[key]["score"] = playerData[key]["score"] + 1;
+        playerData[key]["streak"] = playerData[key]["streak"] + 1;
+        let streakMultiplier = 1 + (playerData[key]["streak"] - 1) / 100;
         if (playerData[key]["time"] === undefined) {
-          playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * multiplier);
+          playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * multiplier * streakMultiplier);
         }
         else {
-          playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * (playerData[key]["time"] / time) * multiplier);
+          playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * (playerData[key]["time"] / time) * multiplier * streakMultiplier);
         }
       }
       else {
         playerData[key]["correct"] = false;
+        playerData[key]["streak"] = 0;
       }
     }
     else {
@@ -116,10 +120,14 @@ function completeQuestion(socket) {
       let correctResponse = (playerResponse.toString() == loadedGame.questions[currentQuestion - 1].answers.toString());
       if (playerData[key]["time"] !== undefined && correctResponse) {
         playerData[key]["correct"] = true;
-        playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * (playerData[key]["time"] / time) * multiplier);
+        playerData[key]["score"] = playerData[key]["score"] + 1;
+        playerData[key]["streak"] = playerData[key]["streak"] + 1;
+        let streakMultiplier = 1 + (playerData[key]["streak"] - 1) / 100;
+        playerData[key]["points"] = playerData[key]["points"] + Math.round(1000 * (playerData[key]["time"] / time) * multiplier * streakMultiplier);
       }
       else {
         playerData[key]["correct"] = false;
+        playerData[key]["streak"] = 0;
       }
     }
   });
@@ -215,7 +223,7 @@ io.on("connection", function(socket) {
       hostEntered = true;
       console.log(`[${socketID}] Host has been entered!`);
       hostID = socketID;
-      io.sockets.emit("hostReady", true, hostID);
+      io.sockets.emit("hostReady", true, hostID, loadedGame.title);
     }
     else {
       console.log(`[${socketID}] Incorrect code was entered.`);
@@ -244,7 +252,9 @@ io.on("connection", function(socket) {
     playerData[playerID] = {
       "name": playerName,
       "answer": [false, false, false, false],
-      "points": 0
+      "points": 0,
+      "score": 0,
+      "streak": 0
     };
     socket.emit("namemessage", playerName, true);
     io.sockets.emit("playerUpdate", Object.values(playerData).map(player => player.name), hostID);
@@ -307,7 +317,7 @@ io.on("connection", function(socket) {
       return;
     }
     if (currentQuestion === loadedGame.questions.length) {
-      console.log("Done!");
+      io.sockets.emit("completeGame", playerData, loadedGame.questions.length);
       return;
     }
     newQuestion(socket);

@@ -61,7 +61,7 @@ socket.on("connect", () => {
     }
   });
 
-  socket.on("hostReady", function(valid, returningID) {
+  socket.on("hostReady", function(valid, returningID, data) {
     if (!valid) {
       if (hostID == returningID) {
         errors++;
@@ -79,6 +79,8 @@ socket.on("connect", () => {
         $(window).on("beforeunload", function(e) {
           return e;
         });
+        $("#topbar").css("display", "block");
+        $("#gamename").html("<i>" + data + "</i>");
         $("#pregame").css("display", "block");
         $("#startcontent").css("display", "none");
       }
@@ -188,6 +190,26 @@ socket.on("connect", () => {
         $(this).css("filter", "grayscale(0.5)");
       }
     });
+  });
+
+  $("#musictoggle").click(function() {
+    toggleMusic();
+    if (AUDIO_SETTINGS.music) {
+      $("#musictoggle").css("filter", "grayscale(0.75)");
+    }
+    else {
+      $("#musictoggle").css("filter", "grayscale(1)");
+    }
+  });
+
+  $("#soundtoggle").click(function() {
+    toggleSounds();
+    if (AUDIO_SETTINGS.sounds) {
+      $("#soundtoggle").css("filter", "grayscale(0.75)");
+    }
+    else {
+      $("#soundtoggle").css("filter", "grayscale(1)");
+    }
   });
 
   $("#gobutton").click(function() {

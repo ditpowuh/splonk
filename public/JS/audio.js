@@ -11,7 +11,7 @@ function toggleSounds() {
 
 function toggleMusic() {
   AUDIO_SETTINGS.music = !AUDIO_SETTINGS.music;
-  if (activeMusic !== undefined) {
+  if (activeMusic !== undefined && activeMusic !== null) {
     activeMusic.volume = AUDIO_SETTINGS.music ? 1 : 0;
   }
 }

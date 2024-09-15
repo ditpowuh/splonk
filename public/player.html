@@ -10,6 +10,7 @@
     <div id="topbar" style="display: none;">
       <h1 id="name" class="unselectable">🫵</h1>
       <h1 id="points" class="unselectable">0</h1>
+      <div id="streak" class="unselectable"><img class="unselectable" src="/Images/Fire.svg"><h2>0</h2></div>
     </div>
     <br><br><br>
     <div id="options" style="display: none;">
@@ -28,7 +29,6 @@
       <div id="checkarea" class="boxtext highlight unselectable">
         <p>You answered:</p>
         <div id="youranswer">
-          <br>
           <div class="red"><img class="unselectable" src="/Images/Heart.png"></div>
           <div class="blue"><img class="unselectable" src="/Images/Diamond.png"></div>
           <br><br>
@@ -39,6 +39,13 @@
       </div>
       <br>
       <h4 id="placement" class="boxtext" style="padding: 15px;">You're ??? place!</h4>
+    </div>
+    <div id="finale" class="wrapper" style="">
+      <h1>It's over!</h1>
+      <h2>You got <span id="correct" class="boxtext">?/?</span> correct.</h2>
+      <br>
+      <p>Your final score was...</p>
+      <p id="finalscore" class="boxtext highlight">####</p>
     </div>
     <div id="waiting" class="wrapper" style="display: none;">
       <h1 class="boxtext highlight">Waiting...</h1>

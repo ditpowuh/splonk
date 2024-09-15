@@ -3,6 +3,7 @@ progress, progress::-webkit-progress-bar, progress::-webkit-progress-value {
   height: 16px;
   border-radius: 6px;
   width: 450px;
+  transition: width 2s;
 }
 
 progress::-moz-progress-bar {
@@ -10,6 +11,7 @@ progress::-moz-progress-bar {
   height: 16px;
   border-radius: 6px;
   width: 450px;
+  transition: width 2s;
 }
 
 progress::-webkit-progress-bar {
@@ -20,7 +22,28 @@ progress::-webkit-progress-value {
   background-color: #cccccc;
 }
 
-#question {
+#topbar img {
+  position: fixed;
+  top: 0.5vh;
+  height: 48px;
+  filter: grayscale(0.75);
+  cursor: pointer;
+  transition: transform 0.25s, filter 0.25s;
+}
+
+#topbar img:hover {
+  transform: scale(1.1);
+}
+
+#topbar #musictoggle {
+  left: 0;
+}
+
+#topbar #soundtoggle {
+  left: 3em;
+}
+
+#gamename, #question {
   font-size: 48px;
 }
 
@@ -96,6 +119,7 @@ progress::-webkit-progress-value {
 
 #leaderboard ul li img {
   padding: 0 15px 0 15px;
+  height: 24px;
 }
 
 #leaderboard ul li div.left {
@@ -130,14 +154,16 @@ progress::-webkit-progress-value {
 #questiontype h2 {
   display: inline;
   vertical-align: middle;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 #questiontype img {
   display: inline;
-  padding: 0 5px 0 5px;
-  filter: invert(1);
+  padding-left: 5px;
+  padding-right: 5px;
+  height: 32px;
+  filter: invert(0.9);
 }
 
 @keyframes swing {
@@ -212,7 +238,6 @@ progress::-webkit-progress-value {
 }
 
 .star {
-  height: 25px;
   vertical-align: middle;
   margin-bottom: 0.25em;
   animation: star 2s linear infinite;
