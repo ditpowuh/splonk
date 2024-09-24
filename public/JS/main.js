@@ -122,6 +122,9 @@ socket.on("connect", () => {
         $(this).css("display", "none");
       }
     });
+    if (progressValue === 1) {
+      $("#nextquestionbutton").html("Finish Up");
+    }
   });
 
   socket.on("newQuestion", function(questionData) {
@@ -172,7 +175,7 @@ socket.on("connect", () => {
   });
 
   socket.on("questionTimer", function(time) {
-    $("#counter").html(time.toString());
+    $("#counter").html(time);
   });
 
   socket.on("answerReveal", function(answer) {
@@ -190,6 +193,16 @@ socket.on("connect", () => {
         $(this).css("filter", "grayscale(0.5)");
       }
     });
+  });
+
+  socket.on("completeGame", function() {
+    $("#finaltext").css("display", "inline");
+    $("#progress").css("display", "none");
+    $("#nextquestionbutton").css("display", "none");
+    generateConfetti(500, 300);
+    setTimeout(function() {
+      generateConfetti(200, 360, 4, 1);
+    }, 1000);
   });
 
   $("#musictoggle").click(function() {

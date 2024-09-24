@@ -92,6 +92,10 @@
   border-radius: 25px;
 }
 
+#finale h1 {
+  font-size: 48px;
+}
+
 .option {
   display: flex;
   justify-content: center;

@@ -53,7 +53,7 @@ function answerReveal(playerAnswer, isCorrect, placing) {
       $(element).css("border", "5px #ffffff solid");
     }
   });
-  $("#placement").html(`You're ${givePlacing(placing)} place!`);
+  $(".placement").html(`You're ${givePlacing(placing)} place!`);
 }
 
 socket.on("connect", () => {
@@ -154,6 +154,14 @@ socket.on("connect", () => {
       return;
     }
     socket.emit("playerJoin", playerID, $("#nameinput").val());
+  });
+
+  socket.on("completeGame", function(playerData, totalQuestions) {
+    $("#finale").css("display", "block");
+    $("#answerreveal").css("display", "none");
+    $("#correct").html(`${playerData[playerID]["score"]}/${totalQuestions}`);
+    $("#finalscore").html(playerData[playerID]["points"]);
+    generateConfetti(500, 300);
   });
 
   buttons[0].click(function() {

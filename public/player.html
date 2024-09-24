@@ -38,14 +38,16 @@
         </div>
       </div>
       <br>
-      <h4 id="placement" class="boxtext" style="padding: 15px;">You're ??? place!</h4>
+      <h4 class="placement boxtext" style="padding: 15px;">You're ??? place!</h4>
     </div>
-    <div id="finale" class="wrapper" style="">
+    <div id="finale" class="wrapper" style="display: none;">
       <h1>It's over!</h1>
       <h2>You got <span id="correct" class="boxtext">?/?</span> correct.</h2>
       <br>
       <p>Your final score was...</p>
-      <p id="finalscore" class="boxtext highlight">####</p>
+      <h2 id="finalscore" class="boxtext highlight">####</h2>
+      <br>
+      <h4 class="placement boxtext" style="padding: 15px;">You're ??? place!</h4>
     </div>
     <div id="waiting" class="wrapper" style="display: none;">
       <h1 class="boxtext highlight">Waiting...</h1>
@@ -65,6 +67,7 @@
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/JS/jquery.3.7.1.min.js"></script>
+    <script src="/JS/confetti.min.js"></script>
     <script src="/JS/utilities.js"></script>
     <script src="/JS/player.js"></script>
   </body>

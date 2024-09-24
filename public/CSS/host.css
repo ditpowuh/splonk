@@ -178,7 +178,6 @@ progress::-webkit-progress-value {
   }
 }
 
-
 @keyframes star {
   0% {
     transform: rotate(0);

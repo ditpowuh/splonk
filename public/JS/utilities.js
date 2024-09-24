@@ -17,3 +17,28 @@ function givePlacing(number) {
       return `${number}th`;
   }
 }
+
+function generateConfetti(amount, spread, bursts = 1, delay = 0) {
+  for (let i = 0; i < bursts; i++) {
+    setTimeout(function() {
+      confetti({
+        angle: 45,
+        particleCount: amount || 200,
+        spread: spread || 360,
+        origin: {
+          x: 0.0,
+          y: 0.2
+        }
+      });
+      confetti({
+        angle: 135,
+        particleCount: amount || 200,
+        spread: spread || 360,
+        origin: {
+          x: 1.0,
+          y: 0.2
+        }
+      });
+    }, i * delay * 1000)
+  }
+}
