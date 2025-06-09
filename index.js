@@ -5,6 +5,7 @@ import path from "path";
 import fs from "fs";
 
 import crypto from "crypto";
+import chalk from "chalk";
 
 import {Server} from "socket.io";
 import {fileURLToPath} from "url";
@@ -36,7 +37,7 @@ var currentQuestion = 0;
 var timer = 0;
 var timerInterval = null;
 
-console.log(`Host Code: ${hostCode}\n`);
+console.log(`${chalk.greenBright(`Host Code: ${hostCode}`)}\n`);
 
 process.on("uncaughtException", function(exception) {
   console.log(exception);
@@ -177,7 +178,7 @@ io.on("connection", function(socket) {
       console.log(`User disconnected! (Socket ID: ${socket.id})`);
     }
     if (socket.id == hostID) {
-      console.log("\nALERT: Host has left!\n");
+      console.log(`\n${chalk.redBright("ALERT: Host has left!")}\n`);
     }
     if (socket.id in playerData && !gameStart) {
       delete playerData[socket.id];
@@ -348,5 +349,5 @@ io.on("connection", function(socket) {
 });
 
 server.listen(PORT, function() {
-  console.log(`Listening at specified port...\nGo to http://localhost:${PORT} to start.`);
+  console.log(`Listening at specified port...\nGo to ${chalk.cyanBright(`http://localhost:${PORT}`)} to start.\n`);
 });
