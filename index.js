@@ -1,10 +1,21 @@
-require("dotenv").config();
-const express = require("express");
-const app = express();
-const http = require("http").Server(app);
-const io = require("socket.io")(http);
+import "dotenv/config";
+import express from "express";
+import http from "http";
+import path from "path";
+import fs from "fs";
 
-const crypto = require("crypto");
+import crypto from "crypto";
+
+import {Server} from "socket.io";
+import {fileURLToPath} from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+
+const server = http.Server(app);
+const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
 
@@ -154,7 +165,7 @@ app.use(express.static("public", {
 }));
 
 app.get("*", function(request, response) {
-  response.sendFile(__dirname + "/public/404.html");
+  response.sendFile(path.join(__dirname, "public", "404.html"));
 });
 
 io.on("connection", function(socket) {
@@ -189,10 +200,10 @@ io.on("connection", function(socket) {
     }
     if (fileName.toLowerCase().endsWith(".json")) {
       try {
-        loadedGame = require(`./games/${fileName}`);
+        loadedGame = JSON.parse(fs.readFileSync(`./games/${fileName}`));
       }
       catch (err) {
-        if (err.code == "MODULE_NOT_FOUND") {
+        if (err.code == "ENOENT") {
           console.log(`[${socketID}] The selected game could not be found.`);
         }
         else {
@@ -205,10 +216,10 @@ io.on("connection", function(socket) {
     }
     else {
       try {
-        loadedGame = require(`./games/${fileName}.json`);
+        loadedGame = JSON.parse(fs.readFileSync(`./games/${fileName}.json`));
       }
       catch (err) {
-        if (err.code == "MODULE_NOT_FOUND") {
+        if (err.code == "ENOENT") {
           console.log(`[${socketID}] The selected game could not be found.`);
         }
         else {
@@ -336,6 +347,6 @@ io.on("connection", function(socket) {
   });
 });
 
-http.listen(PORT, function() {
+server.listen(PORT, function() {
   console.log(`Listening at specified port...\nGo to http://localhost:${PORT} to start.`);
 });
