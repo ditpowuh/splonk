@@ -44,17 +44,17 @@ process.on("uncaughtException", function(exception) {
 });
 
 function verifyHost(socketID) {
-  return hostID == socketID;
+  return hostID === socketID;
 }
 
 function validifyName(name) {
   if (Object.keys(playerData).length >= PLAYER_LIMIT) {
     return {"validity": false, "message": "Too much players!"};
   }
-  if (name == "") {
+  if (name === "") {
     return {"validity": false, "message": "Cannot be left blank!"};
   }
-  if (hostID == "") {
+  if (hostID === "") {
     return {"validity": false, "message": "Host has not entered yet!"};
   }
   if (/\p{Extended_Pictographic}/u.test(name)) {
@@ -71,7 +71,7 @@ function setTimer(amount, taskAfter) {
   timerInterval = setInterval(() => {
     timer = timer - 0.05;
     if (timer <= 0) {
-      if (taskAfter !== undefined && typeof taskAfter == "function") {
+      if (taskAfter !== undefined && typeof taskAfter === "function") {
         taskAfter();
       }
       clearTimer();
@@ -129,7 +129,7 @@ function completeQuestion(socket) {
           playerResponse.push(loadedGame.questions[currentQuestion - 1].options[i]);
         }
       }
-      let correctResponse = (playerResponse.toString() == loadedGame.questions[currentQuestion - 1].answers.toString());
+      let correctResponse = (playerResponse.toString() === loadedGame.questions[currentQuestion - 1].answers.toString());
       if (playerData[key]["time"] !== undefined && correctResponse) {
         playerData[key]["correct"] = true;
         playerData[key]["score"] = playerData[key]["score"] + 1;
@@ -177,7 +177,7 @@ io.on("connection", function(socket) {
     if (CONNECTION_LOGGING) {
       console.log(`User disconnected! (Socket ID: ${socket.id})`);
     }
-    if (socket.id == hostID) {
+    if (socket.id === hostID) {
       console.log(`\n${chalk.redBright("ALERT: Host has left!")}\n`);
     }
     if (socket.id in playerData && !gameStart) {
@@ -204,7 +204,7 @@ io.on("connection", function(socket) {
         loadedGame = JSON.parse(fs.readFileSync(`./games/${fileName}`));
       }
       catch (err) {
-        if (err.code == "ENOENT") {
+        if (err.code === "ENOENT") {
           console.log(`[${socketID}] The selected game could not be found.`);
         }
         else {
@@ -220,7 +220,7 @@ io.on("connection", function(socket) {
         loadedGame = JSON.parse(fs.readFileSync(`./games/${fileName}.json`));
       }
       catch (err) {
-        if (err.code == "ENOENT") {
+        if (err.code === "ENOENT") {
           console.log(`[${socketID}] The selected game could not be found.`);
         }
         else {
@@ -231,7 +231,7 @@ io.on("connection", function(socket) {
         return;
       }
     }
-    if (code == hostCode) {
+    if (code === hostCode) {
       hostEntered = true;
       console.log(`[${socketID}] Host has been entered!`);
       hostID = socketID;
@@ -253,7 +253,7 @@ io.on("connection", function(socket) {
     }
     let alreadyExists = false;
     Object.keys(playerData).forEach(function(key) {
-      if (playerData[key]["name"] == playerName) {
+      if (playerData[key]["name"] === playerName) {
         alreadyExists = true;
       }
     });
@@ -291,7 +291,7 @@ io.on("connection", function(socket) {
     if (!verifyHost(socketID)) {
       return;
     }
-    let playerID = Object.keys(playerData).find(key => playerData[key]["name"] == playerName);
+    let playerID = Object.keys(playerData).find(key => playerData[key]["name"] === playerName);
     delete playerData[playerID];
     io.sockets.emit("playerKicked", playerID);
     io.sockets.emit("playerUpdate", Object.values(playerData).map(player => player.name), hostID);

@@ -12,7 +12,7 @@ function startTimer(duration, taskAfter) {
     timerNumber = timerNumber - 1;
     $("#beforecounter").html(timerNumber);
     if (timerNumber <= 0) {
-      if (taskAfter !== undefined && typeof taskAfter == "function") {
+      if (taskAfter !== undefined && typeof taskAfter === "function") {
         taskAfter();
       }
       stopTimer();
@@ -63,7 +63,7 @@ socket.on("connect", () => {
 
   socket.on("hostReady", function(valid, returningID, data) {
     if (!valid) {
-      if (hostID == returningID) {
+      if (hostID === returningID) {
         errors++;
         $("#statusmessage").css("color", "#ff0000");
         if (errors > 1) {
@@ -75,7 +75,7 @@ socket.on("connect", () => {
       }
     }
     else {
-      if (hostID == returningID) {
+      if (hostID === returningID) {
         $(window).on("beforeunload", function(e) {
           return e;
         });

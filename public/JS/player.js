@@ -116,7 +116,7 @@ socket.on("connect", () => {
     if (!playerJoined) {
       return;
     }
-    let placing = leaderboard.findIndex(([key, value]) => key == playerID) + 1;
+    let placing = leaderboard.findIndex(([key, value]) => key === playerID) + 1;
     answerReveal(options, playerData[playerID]["correct"], placing);
     $("#points").html(playerData[playerID]["points"]);
     $("#waiting").css("display", "none");
@@ -132,7 +132,7 @@ socket.on("connect", () => {
   });
 
   socket.on("playerKicked", function(socketID) {
-    if (playerID == socketID) {
+    if (playerID === socketID) {
       $(window).off("beforeunload");
       location.reload();
     }
@@ -148,7 +148,7 @@ socket.on("connect", () => {
   });
 
   $("#gobutton").click(function() {
-    if ($("#nameinput").val() == "") {
+    if ($("#nameinput").val() === "") {
       $("#statusmessage").html("Cannot be left blank!");
       $("#statusmessage").css("color", "#ff0000");
       return;
