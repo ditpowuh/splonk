@@ -10,9 +10,6 @@ import chalk from "chalk";
 import {Server} from "socket.io";
 import {fileURLToPath} from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const app = express();
 
 const server = http.Server(app);
@@ -166,7 +163,7 @@ app.use(express.static("public", {
 }));
 
 app.get("*", function(request, response) {
-  response.sendFile(path.join(__dirname, "public", "404.html"));
+  response.sendFile(path.join(process.cwd(), "public", "404.html"));
 });
 
 io.on("connection", function(socket) {
@@ -351,3 +348,7 @@ io.on("connection", function(socket) {
 server.listen(PORT, function() {
   console.log(`Listening at specified port...\nGo to ${chalk.cyanBright(`http://localhost:${PORT}`)} to start.\n`);
 });
+
+if (!fs.existsSync(path.join(process.cwd(), "games"))){
+  fs.mkdirSync(path.join(process.cwd(), "games"));
+}
