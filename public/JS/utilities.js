@@ -1,3 +1,8 @@
+function beforeUnload(event) {
+  event.preventDefault();
+  event.returnValue = "";
+}
+
 function getRandomItem(array) {
   return array[Math.floor(Math.random() * array.length)];
 }

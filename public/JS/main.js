@@ -7,10 +7,10 @@ var timerNumber = 0;
 
 function startTimer(duration, taskAfter) {
   timerNumber = duration;
-  $("#beforecounter").html(timerNumber);
+  document.querySelector("#beforecounter").innerHTML = timerNumber;
   timerInterval = setInterval(() => {
     timerNumber = timerNumber - 1;
-    $("#beforecounter").html(timerNumber);
+    document.querySelector("#beforecounter").innerHTML = timerNumber;
     if (timerNumber <= 0) {
       if (taskAfter !== undefined && typeof taskAfter === "function") {
         taskAfter();
@@ -35,11 +35,11 @@ function showPoints(element, points, order) {
       for (let i = 0; i < digits; i++) {
         text = text + Math.floor(Math.random() * 10).toString();
       }
-      element.html(text);
+      element.innerHTML = text;
     }, i * 25);
   }
   setTimeout(function() {
-    element.html(points.toString());
+    element.innerHTML = points.toString();
   }, (25 + order * 20) * 25);
 }
 
@@ -57,7 +57,7 @@ socket.on("connect", () => {
       window.location.replace("/player");
     }
     else {
-      $("#startcontent").css("display", "block");
+      document.querySelector("#startcontent").style.display = "block";
     }
   });
 
@@ -65,24 +65,22 @@ socket.on("connect", () => {
     if (!valid) {
       if (hostID === returningID) {
         errors++;
-        $("#statusmessage").css("color", "#ff0000");
+        document.querySelector("#statusmessage").style.color = "#ff0000";
         if (errors > 1) {
-          $("#statusmessage").html(`Incorrect code or invalid game! Check console. (${errors})`);
+          document.querySelector("#statusmessage").innerHTML = "Incorrect code or invalid game! Check console. (" + errors + ")";
         }
         else {
-          $("#statusmessage").html("Incorrect code or invalid game! Check console.");
+          document.querySelector("#statusmessage").innerHTML = "Incorrect code or invalid game! Check console.";
         }
       }
     }
     else {
       if (hostID === returningID) {
-        $(window).on("beforeunload", function(e) {
-          return e;
-        });
-        $("#topbar").css("display", "block");
-        $("#gamename").html("<i>" + data + "</i>");
-        $("#pregame").css("display", "block");
-        $("#startcontent").css("display", "none");
+        window.addEventListener("beforeunload", beforeUnload);
+        document.querySelector("#topbar").style.display = "block";
+        document.querySelector("#gamename").innerHTML = "<i>" + data + "</i>";
+        document.querySelector("#pregame").style.display = "block";
+        document.querySelector("#startcontent").style.display = "none";
       }
       else {
         window.location.replace("/player");
@@ -95,74 +93,80 @@ socket.on("connect", () => {
       return;
     }
     if (!gameStarted) {
-      playSound(popAudio)
+      playSound(popAudio);
     }
-    $("#playerlist").empty();
+    document.querySelector("#playerlist").replaceChildren();
     for (let i = 0; i < playerNames.length; i++) {
-      let div = $(`<div>${playerNames[i]}</div>`);
-      div.click(function() {
+      let div = document.createElement("div");
+      div.innerHTML = playerNames[i];
+
+      div.addEventListener("click", function() {
         socket.emit("playerKick", playerNames[i], hostID);
       });
-      $("#playerlist").append(div);
+      document.querySelector("#playerlist").append(div);
       if (i !== playerNames.length - 1) {
-        $("#playerlist").append(" ");
+        document.querySelector("#playerlist").append(" ");
       }
     }
   });
 
   socket.on("leaderboard", function(progressValue, topPlayers) {
-    $("#progress").val(progressValue);
-    $("#leaderboard ul li").each(function(index) {
+    document.querySelector("#progress").value = progressValue;
+    document.querySelectorAll("#leaderboard ul li").forEach(function(element, index) {
       if (index < topPlayers.length) {
-        $(this).css("display", "block");
-        $(this).find(".player").html(topPlayers[index][1]["name"]);
-        showPoints($(this).find(".right"), topPlayers[index][1]["points"], index);
+        element.style.display = "block";
+        element.querySelector(":scope .player").innerHTML = topPlayers[index][1]["name"];
+        showPoints(element.querySelector(":scope .right"), topPlayers[index][1]["points"], index);
       }
       else {
-        $(this).css("display", "none");
+        element.style.display = "none";
       }
     });
     if (progressValue === 1) {
-      $("#nextquestionbutton").html("Finish Up");
+      document.querySelector("#nextquestionbutton").innerHTML = "Finish Up";
     }
   });
 
   socket.on("newQuestion", function(questionData) {
-    $("#gamecontent").css("display", "block");
-    $("#question").html(questionData.question);
+    document.querySelector("#gamecontent").style.display = "block";
+    document.querySelector("#question").innerHTML = questionData.question;
+
     let numberOfOptions = questionData.options.length;
-    $("#options .option").each(function(index) {
-      $(this).find("span").html(questionData.options[index]);
-      $(this).css("border", "5px #ffffff solid");
-      $(this).css("filter", "none");
+
+    document.querySelectorAll("#options .option").forEach(function(element, index) {
+      element.querySelector(":scope span").innerHTML = questionData.options[index];
+      element.style.border = "5px #ffffff solid";
+      element.style.filter = "none";
       if (index < numberOfOptions) {
-        $(this).css("display", "inline-block");
+        element.style.display = "inline-block";
       }
       else {
-        $(this).css("display", "none");
+        element.style.display = "none";
       }
     });
     if (questionData.answers.length > 1) {
-      $("#questiontype").find("h2").html("MULTIPLE SELECT");
+      document.querySelector("#questiontype h2").innerHTML = "MULTIPLE SELECT";
     }
     else {
-      $("#questiontype").find("h2").html("SINGLE SELECT");
+      document.querySelector("#questiontype h2").innerHTML = "SINGLE SELECT";
     }
 
-    $("#nextbutton").html("End Question Early");
+    document.querySelector("#nextbutton").innerHTML = "End Question Early";
     endedQuestion = false;
 
-    $("#beforecounter").css("display", "inline-block");
-    $("#counter").css("display", "none");
-    $("#options").css("display", "none");
-    $("#nextbutton").css("display", "none");
-    $("#leaderboard").css("display", "none");
+    document.querySelector("#beforecounter").style.display = "inline-block";
+    document.querySelector("#counter").style.display = "none";
+    document.querySelector("#options").style.display = "none";
+    document.querySelector("#nextbutton").style.display = "none";
+    document.querySelector("#leaderboard").style.display = "none";
+
     socket.emit("showingQuestion", hostID);
+
     startTimer(5, function() {
-      $("#beforecounter").css("display", "none");
-      $("#counter").css("display", "block");
-      $("#options").css("display", "block");
-      $("#nextbutton").css("display", "inline");
+      document.querySelector("#beforecounter").style.display = "none";
+      document.querySelector("#counter").style.display = "block";
+      document.querySelector("#options").style.display = "block";
+      document.querySelector("#nextbutton").style.display = "inline";
       socket.emit("startQuestion", hostID);
     });
   });
@@ -175,78 +179,78 @@ socket.on("connect", () => {
   });
 
   socket.on("questionTimer", function(time) {
-    $("#counter").html(time);
+    document.querySelector("#counter").innerHTML = time;
   });
 
   socket.on("answerReveal", function(answer) {
     endedQuestion = true;
     clearInterval(requestTimer);
     requestTimer = null;
-    $("#nextbutton").html("To The Leaderboard");
-    $("#counter").css("display", "none");
-    $("#options .option").each(function() {
-      if (answer.includes($(this).find("span").html())) {
-        $(this).css("border", "5px #999999 solid");
+    document.querySelector("#nextbutton").innerHTML = "To The Leaderboard";
+    document.querySelector("#counter").style.display = "none";
+    document.querySelectorAll("#options .option").forEach(function(element, index) {
+      if (answer.includes(element.querySelector(":scope span").innerHTML)) {
+        element.style.border = "5px #999999 solid";
       }
       else {
-        $(this).css("border", "5px #ffffff solid");
-        $(this).css("filter", "grayscale(0.5)");
+        element.style.border = "5px #ffffff solid";
+        element.style.filter = "grayscale(0.5)";
       }
     });
   });
 
   socket.on("completeGame", function() {
-    $("#finaltext").css("display", "inline");
-    $("#progress").css("display", "none");
-    $("#nextquestionbutton").css("display", "none");
+    document.querySelector("#finaltext").style.display = "inline";
+    document.querySelector("#progress").style.display = "none";
+    document.querySelector("#nextquestionbutton").style.display = "none";
     generateConfetti(500, 300);
     setTimeout(function() {
       generateConfetti(200, 360, 4, 1);
     }, 1000);
   });
 
-  $("#musictoggle").click(function() {
+  document.querySelector("#musictoggle").addEventListener("click", function() {
     toggleMusic();
     if (AUDIO_SETTINGS.music) {
-      $("#musictoggle").css("filter", "grayscale(0.75)");
+      document.querySelector("#musictoggle").style.filter = "grayscale(0.75)";
     }
     else {
-      $("#musictoggle").css("filter", "grayscale(1)");
+      document.querySelector("#musictoggle").style.filter = "grayscale(1)";
     }
   });
 
-  $("#soundtoggle").click(function() {
+  document.querySelector("#soundtoggle").addEventListener("click", function() {
     toggleSounds();
     if (AUDIO_SETTINGS.sounds) {
-      $("#soundtoggle").css("filter", "grayscale(0.75)");
+      document.querySelector("#soundtoggle").style.filter = "grayscale(0.75)";
     }
     else {
-      $("#soundtoggle").css("filter", "grayscale(1)");
+      document.querySelector("#soundtoggle").style.filter = "grayscale(1)";
     }
   });
 
-  $("#gobutton").click(function() {
-    socket.emit("hostSetup", $("#codeinput").val(), $("#gameinput").val(), hostID);
+  document.querySelector("#gobutton").addEventListener("click", function() {
+    socket.emit("hostSetup", document.querySelector("#codeinput").value, document.querySelector("#gameinput").value, hostID);
   });
 
-  $("#startbutton").click(function() {
-    $("#pregame").css("display", "none");
+  document.querySelector("#startbutton").addEventListener("click", function() {
+    document.querySelector("#pregame").style.display = "none";
     socket.emit("startGame", hostID);
     gameStarted = true;
   });
 
-  $("#nextbutton").click(function() {
+  document.querySelector("#nextbutton").addEventListener("click", function() {
     if (!endedQuestion) {
       socket.emit("endQuestion", hostID);
     }
     else {
-      $("#gamecontent").css("display", "none");
-      $("#leaderboard").css("display", "block");
+      document.querySelector("#gamecontent").style.display = "none";
+      document.querySelector("#leaderboard").style.display = "block";
       socket.emit("leaderboard", hostID);
     }
   });
 
-  $("#nextquestionbutton").click(function() {
+  document.querySelector("#nextquestionbutton").addEventListener("click", function() {
     socket.emit("newQuestion", hostID);
   });
 
