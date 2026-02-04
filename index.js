@@ -21,18 +21,18 @@ const PLAYER_LIMIT = 100; // Modify this to adjust the player limit
 const CONNECTION_LOGGING = true; // Modify this if knowing when players join and leave is desired
 
 const hostCode = Array.from({length: 6}, () => crypto.randomInt(0, 9)).join("");
-var hostEntered = false;
-var hostID = "";
+let hostEntered = false;
+let hostID = "";
 
-var playerData = {};
-var leaderboard = null;
+let playerData = {};
+let leaderboard = null;
 
-var loadedGame = null;
-var gameStart = false;
-var questionInProgress = false;
-var currentQuestion = 0;
-var timer = 0;
-var timerInterval = null;
+let loadedGame = null;
+let gameStart = false;
+let questionInProgress = false;
+let currentQuestion = 0;
+let timer = 0;
+let timerInterval = null;
 
 console.log(`${chalk.greenBright(`Host Code: ${hostCode}`)}\n`);
 
@@ -84,10 +84,10 @@ function clearTimer() {
 }
 
 function completeQuestion(socket) {
-  var multiplier = loadedGame.questions[currentQuestion - 1].pointMultiplier || 1;
-  var time = loadedGame.questions[currentQuestion - 1].time || 15;
+  let multiplier = loadedGame.questions[currentQuestion - 1].pointMultiplier || 1;
+  let time = loadedGame.questions[currentQuestion - 1].time || 15;
 
-  var allNull = true;
+  let allNull = true;
   for (let i = 0; i < loadedGame.questions[currentQuestion - 1].answers.length; i++) {
     if (loadedGame.questions[currentQuestion - 1].answers[i] !== null) {
       allNull = false;

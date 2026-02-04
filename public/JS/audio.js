@@ -3,7 +3,7 @@ const AUDIO_SETTINGS = {
   "sounds": true
 };
 const activeSoundInstances = [];
-var activeMusic = null;
+let activeMusic = null;
 
 function toggleSounds() {
   AUDIO_SETTINGS.sounds = !AUDIO_SETTINGS.sounds;

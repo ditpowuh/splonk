@@ -2,8 +2,8 @@ const socket = io();
 
 const popAudio = new Audio("/Audio/Pop.mp3");
 
-var timerInterval = null;
-var timerNumber = 0;
+let timerInterval = null;
+let timerNumber = 0;
 
 function startTimer(duration, taskAfter) {
   timerNumber = duration;
@@ -46,10 +46,10 @@ function showPoints(element, points, order) {
 socket.on("connect", () => {
   const hostID = socket.id;
 
-  var errors = 0;
-  var gameStarted = false;
-  var endedQuestion = false;
-  var requestTimer = null;
+  let errors = 0;
+  let gameStarted = false;
+  let endedQuestion = false;
+  let requestTimer = null;
 
   socket.emit("check");
   socket.on("check", function(result) {
