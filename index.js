@@ -162,8 +162,8 @@ app.use(express.static("public", {
   extensions: ["html"]
 }));
 
-app.get("*", function(request, response) {
-  response.sendFile(path.join(process.cwd(), "public", "404.html"));
+app.use((request, response) => {
+  response.status(404).sendFile(process.cwd() + "/public/404.html");
 });
 
 io.on("connection", function(socket) {
